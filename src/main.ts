@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { SCREEN, PALETTE } from './config';
-import { BootScene } from './scenes/Boot';
+import { PlayScene } from './scenes/Play';
 
 new Phaser.Game({
   type: Phaser.AUTO,
@@ -13,7 +13,7 @@ new Phaser.Game({
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
-  // No Arcade/Matter physics. Ballistics is 20 lines of our own integration —
-  // a physics engine would only get in the way of a wind we fully control.
-  scene: [BootScene],
+  // No Arcade/Matter physics. Ballistics is 20 lines of our own integration — a
+  // physics engine would only get in the way of a wind we fully control.
+  scene: [PlayScene],
 });
