@@ -49,21 +49,71 @@ export const THROW = {
 
   POWER_MIN: 0.6,
   POWER_MAX: 1.3,
-  /** Pulls mid-range swipes toward the sweet spot so power is a warm-up skill, not the skill. */
-  POWER_EASE: 0.75,
 
-  /** Enough that no two throws are identical; small enough that a correct read is never robbed. */
-  NOISE_POWER: 0.02,
-  NOISE_ANGLE: (1.5 * Math.PI) / 180,
+  /**
+   * How much a swipe's strength is allowed to matter. Measured in Stage 1, and
+   * the measurement changed the design.
+   *
+   * The bin is 6m away, so depth error scales brutally with power: the window
+   * that actually goes in is only −4% to +5.5%. But realistic human swipes span
+   * power 0.82 → 1.30. At the original 0.75, four of five plausible swipes
+   * missed — and missed on POWER, not on wind. Power was the whole game, which
+   * is the exact opposite of the thesis.
+   *
+   * At 0.12, every realistic swipe lands in a windless room, and only a
+   * genuinely feeble one fails. Which is the game, stated mechanically:
+   *
+   *   With no political wind, every vote reaches the count.
+   *   All of the difficulty is political.
+   *
+   * Swipe strength is now a light touch, not a skill. That is deliberate. If a
+   * playtester says the throw feels unresponsive, the fix is feedback (arc,
+   * sound, the hand), NOT raising this number — raising it hands the game back
+   * to the thumb and takes it away from the room.
+   */
+  POWER_EASE: 0.12,
+
+  /**
+   * "How much random variation is added to each throw" was an open question in
+   * the design doc. Stage 1 answered it: ALMOST NONE, and the reason is not a
+   * matter of taste.
+   *
+   * Both windows are tight. Power that goes in spans only ±5%. Lateral spans
+   * ±0.30m at the bin. The original noise — ±2% power, ±1.5° angle — was sized
+   * by feel, against nothing. Measured against the windows it actually lives in:
+   *
+   *   ±2% power   → ate 40% of the power window
+   *   ±1.5° angle → moved the ball 0.14m, ~47% of the lateral window
+   *
+   * So a straight, well-judged, correctly-compensated throw was being thrown out
+   * of the bin by dice, several times a session. And the player would have
+   * blamed THE WIND — because in this game, an unexplained sideways miss reads
+   * as politics. Random variation that impersonates the antagonist is not
+   * texture. It is a lie about what the game is.
+   *
+   * These values keep throws from being pixel-identical and do nothing else.
+   */
+  NOISE_POWER: 0.006,
+  NOISE_ANGLE: (0.4 * Math.PI) / 180,
 } as const;
 
 export const GESTURE = {
   MIN_UP_PX: 60,
   MAX_DURATION_MS: 500,
+
+  /**
+   * Calibrated so an ORDINARY swipe lands power ≈ 1.0 — dead centre of the
+   * window that goes in.
+   *
+   * These were 0.32 / 2.6, which put a typical swipe at 0.98: inside the window,
+   * but hard against its lower edge, so any noise tipped it out. The sweet spot
+   * has to sit where the thumb naturally lands, not next to it.
+   */
   /** Swipe length as a fraction of screen height that reads as full power. */
-  LENGTH_REF: 0.32,
+  LENGTH_REF: 0.28,
   /** px/ms that reads as full power. */
-  SPEED_REF: 2.6,
+  SPEED_REF: 2.2,
+
   WEIGHT_LENGTH: 0.6,
   WEIGHT_SPEED: 0.4,
 } as const;
@@ -115,14 +165,28 @@ export const SESSION = {
   RESPAWN_S: 0.35,
 } as const;
 
-/** Fake-depth projection. Tuned by eye in Stage 1 against a real phone. */
+/**
+ * Fake-depth projection. Tuned by eye in Stage 1 against a real phone.
+ *
+ * scale = FOCAL / (z + BACK). The camera sits BACK metres behind the throwing
+ * hand, so the hand is never at the camera plane (where scale would blow up).
+ *
+ * BACK is a cheat, and deliberately so. True perspective makes the ball in your
+ * hand enormous — physically correct, visually absurd. Pushing the camera back
+ * to 1m tames the near-field without touching the physics, which still measures
+ * everything from the hand at z = 0.
+ */
 export const CAMERA = {
   FOCAL: 4.5,
+  BACK: 1.0,
   EYE_Y: 1.5,
-  /** Pixels per metre at z = 0. */
+  /** Pixels per metre at unit scale. */
   PPM: 260,
   HORIZON_FRAC: 0.42,
 } as const;
+
+/** Radius of the crumpled ballot, metres. Drives both the sprite and the shadow. */
+export const BALL_R = 0.06;
 
 /**
  * Design reference resolution. The game scales to fit; it does not reflow.
