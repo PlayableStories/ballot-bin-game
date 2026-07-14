@@ -1,0 +1,7 @@
+# Concept art PNGs are added once the archetype boards replace the
+# real-likeness drafts. See concept-art/README.md.
+concept-art/*.png
+
+node_modules/
+dist/
+.DS_Store
