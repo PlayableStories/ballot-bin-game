@@ -33,9 +33,30 @@ interface Knob {
 const DEG = 180 / Math.PI;
 
 export function shouldShowPanel(): boolean {
+  // ?debug=1 forces it on anywhere; ?debug=0 forces it off. Explicit wins.
   const q = new URLSearchParams(location.search);
   if (q.has('debug')) return q.get('debug') !== '0';
-  return ['localhost', '127.0.0.1'].includes(location.hostname);
+  return isDevHost(location.hostname);
+}
+
+/**
+ * Dev machine, or a phone on the same LAN reaching the dev server by IP.
+ *
+ * The first cut only matched localhost — which meant the panel was invisible on
+ * the exact device Stage 3 exists to serve, a phone hitting 172.20.x.x. The
+ * headless tests never caught it because they hit localhost. Private-range IPs
+ * (RFC 1918 + link-local) are always a dev server; the public GitHub Pages host
+ * is not, so this stays off in production.
+ */
+export function isDevHost(host: string): boolean {
+  if (host === 'localhost' || host === '127.0.0.1') return true;
+  if (host.endsWith('.local')) return true; // bonjour, e.g. williams-mac.local
+  return (
+    /^10\./.test(host) ||
+    /^192\.168\./.test(host) ||
+    /^169\.254\./.test(host) ||
+    /^172\.(1[6-9]|2\d|3[01])\./.test(host) // 172.16.0.0 – 172.31.255.255
+  );
 }
 
 export class TuningPanel {
