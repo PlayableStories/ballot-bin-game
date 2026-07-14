@@ -1,0 +1,25 @@
+{
+  "name": "ballot-waste",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Ballot / Waste — a mobile satire game where politicians' speeches are the wind your ballot has to fly through.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check": "npm run typecheck && npm run test && npm run build"
+  },
+  "dependencies": {
+    "phaser": "^4.2.1"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.7",
+    "vitest": "^2.1.8"
+  }
+}
