@@ -1,9 +1,10 @@
 import Phaser from 'phaser';
-import { SCREEN, SESSION, PALETTE, WORLD } from '../config';
+import { SCREEN, SESSION, PALETTE, WORLD, DEBUG } from '../config';
 import { readSwipe, addNoise, type Sample } from '../systems/Gesture';
 import { launch, step, resolve, type Ballot } from '../systems/Ballistics';
 import { GreyboxRenderer } from '../render/GreyboxRenderer';
 import type { Renderer } from '../render/Renderer';
+import { panel } from '../debug/TuningPanel';
 
 /** Fixed physics step. Decoupled from the frame rate so a 120Hz phone plays the same as a 60Hz one. */
 const FIXED_DT = 1 / 60;
@@ -123,8 +124,9 @@ export class PlayScene extends Phaser.Scene {
   private stepPhysics(dt: number): void {
     if (!this.ballot) return;
 
-    // Stage 1: the wind is zero. Stage 2 is where politics enters the room.
-    const wind = 0;
+    // Stage 2 is where politics blows this. Until then it is a hand-dialled
+    // constant from the tuning panel, so the wind can be FELT before it can speak.
+    const wind = DEBUG.wind;
 
     const next = step(this.ballot, wind, dt);
     const landing = resolve(this.ballot, next);
@@ -136,6 +138,7 @@ export class PlayScene extends Phaser.Scene {
 
       case 'in':
         this.inBin++;
+        panel.recordThrow(true);
         this.ballot = null;
         this.afterLanding();
         return;
@@ -143,6 +146,7 @@ export class PlayScene extends Phaser.Scene {
       case 'rim':
       case 'floor': {
         this.onFloor++;
+        panel.recordThrow(false);
         // The ballot stays where it fell, for the whole session. By the end the
         // floor is a physical record of the election.
         this.view.addLanded(

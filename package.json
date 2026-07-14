@@ -11,13 +11,15 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "check": "npm run typecheck && npm run test && npm run build"
+    "check": "npm run typecheck && npm run test && npm run build",
+    "solve": "npx tsx scripts/solve.ts"
   },
   "dependencies": {
     "phaser": "^4.2.1"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",
+    "tsx": "^4.23.1",
     "typescript": "^5.7.2",
     "vite": "^6.0.7",
     "vitest": "^2.1.8"

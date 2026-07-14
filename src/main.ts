@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { SCREEN, PALETTE } from './config';
 import { PlayScene } from './scenes/Play';
+import { panel, shouldShowPanel } from './debug/TuningPanel';
 
 new Phaser.Game({
   type: Phaser.AUTO,
@@ -17,3 +18,7 @@ new Phaser.Game({
   // physics engine would only get in the way of a wind we fully control.
   scene: [PlayScene],
 });
+
+// Stage 3. Tune the game in the hand that is complaining about it.
+// ?debug=1 anywhere, or automatically on localhost. Never shown to players.
+if (shouldShowPanel()) panel.mount();
