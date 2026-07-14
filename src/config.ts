@@ -13,7 +13,7 @@ export const WORLD = {
   GRAVITY: 9.8,
   /** Floor plane. Ballots that miss come to rest here. */
   FLOOR_Y: 0,
-} as const;
+};
 
 export const BIN = {
   x: 0,
@@ -35,7 +35,7 @@ export const BIN = {
 
   /** Wider window that clips the rim: bounces out, but the near-miss must FEEL near. */
   RIM_HIT: { depth: 0.75, lateral: 0.45 },
-} as const;
+};
 
 export const THROW = {
   /** Velocities at power P = 1.0, which is the perfect no-wind throw. */
@@ -95,7 +95,7 @@ export const THROW = {
    */
   NOISE_POWER: 0.006,
   NOISE_ANGLE: (0.4 * Math.PI) / 180,
-} as const;
+};
 
 export const GESTURE = {
   MIN_UP_PX: 60,
@@ -116,7 +116,7 @@ export const GESTURE = {
 
   WEIGHT_LENGTH: 0.6,
   WEIGHT_SPEED: 0.4,
-} as const;
+};
 
 export const WIND = {
   /**
@@ -154,7 +154,7 @@ export const WIND = {
     STRENGTH: 3.0,
     DURATION_S: 1.5,
   },
-} as const;
+};
 
 export const SESSION = {
   DURATION_S: 75,
@@ -163,7 +163,7 @@ export const SESSION = {
   FIRST_SPEECH_S: 1.0,
   SPEECH_GAP_S: { min: 5, max: 8 },
   RESPAWN_S: 0.35,
-} as const;
+};
 
 /**
  * Fake-depth projection. Tuned by eye in Stage 1 against a real phone.
@@ -183,10 +183,31 @@ export const CAMERA = {
   /** Pixels per metre at unit scale. */
   PPM: 260,
   HORIZON_FRAC: 0.42,
-} as const;
+};
 
 /** Radius of the crumpled ballot, metres. Drives both the sprite and the shadow. */
 export const BALL_R = 0.06;
+
+/**
+ * The groups above are deliberately MUTABLE, not `as const`.
+ *
+ * The Stage 3 tuning panel rewrites them live, on the device, while the game is
+ * running — so a number that felt wrong in the hand can be fixed in the hand,
+ * rather than guessed at from a spreadsheet. Because every system reads through
+ * these object references, a change lands instantly with no plumbing.
+ *
+ * This snapshot is taken at module load, before anything can touch them: it is
+ * what RESET restores, and what the panel diffs against so you can see at a
+ * glance what you have actually changed.
+ */
+export const DEFAULTS = structuredClone({ WORLD, BIN, THROW, GESTURE, WIND, SESSION, CAMERA });
+
+/** Debug-only. A constant wind, dialled by hand, until Stage 2 makes politics blow it. */
+export const DEBUG = {
+  wind: 0,
+  /** Draw the ideal-angle guide and the catch window. Cheating, on purpose. */
+  showSolver: false,
+};
 
 /**
  * Design reference resolution. The game scales to fit; it does not reflow.
