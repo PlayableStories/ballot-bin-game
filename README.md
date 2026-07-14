@@ -22,7 +22,13 @@ Pre-production. Design is settled; no code yet.
 | --- | --- |
 | [`CONCEPT.md`](CONCEPT.md) | The why — theme, metaphor, political framing, visual direction, decision history. |
 | [`GDD-PROTOTYPE.md`](GDD-PROTOTYPE.md) | The how — world model, gesture maths, wind parameters, asset list, build order. |
-| [`concept-art/`](concept-art/) | Visual direction boards. |
+| [`IMPLEMENTATION-PLAN.md`](IMPLEMENTATION-PLAN.md) | Stages 0–6, the two go/no-go gates, and where code stops and a human starts. |
+| [`PROCESS-LOG.md`](PROCESS-LOG.md) | **How this was designed with an AI partner** — including where the AI was wrong. |
+| [`concept-art/`](concept-art/) | Visual direction boards, and the three defects that survived regeneration. |
+
+### On the process log
+
+Playable Stories repos are teaching material as well as version control. [`PROCESS-LOG.md`](PROCESS-LOG.md) records how the design actually got made — what the AI caught, what it derived, what it argued for that would have damaged the game, and where the designer overruled it. A log that only records good decisions teaches nobody anything.
 
 ## Design at a glance
 
