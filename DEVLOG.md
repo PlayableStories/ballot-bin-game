@@ -103,16 +103,57 @@ Stage 2's entire purpose is the playtest question *"can a player read the wind f
 
 That is precisely the trap Stage 1 just escaped, one stage later and more expensive. Baseline difficulty contaminates every measurement taken on top of it.
 
+### Update — 16 July: reviewed, parked, built on anyway
+
+William, back on the phone: *"the difficulty is so far alright — I'll review it in detail later."* So the rescale above is **not** applied. The game still plays at ±3.2°, and Stage 2 was built on that baseline by decision.
+
+The wind code does not depend on the number — but the go/no-go playtest does. So this is not resolved, it is *held*, with the trap above written down next to it: if five testers struggle, read it as *maybe-difficulty* before *maybe-unreadable*, or drop `LATERAL_GAIN` / `WIND.MAX` first (the Stage 3 panel does it live, in the hand). The failing humane test in `Solver.test.ts` stays red-by-design until it is.
+
+---
+
+## Session 3 — 15 July 2026 — Stage 3: Tuning
+
+**PR [#4](https://github.com/PlayableStories/ballot-bin-game/pull/4) · merged**
+
+Built *ahead* of Stage 2, on purpose: the tools to fix a bad feel should exist before the stage most likely to produce one.
+
+A DOM-over-canvas panel — plain HTML, so it works with real thumbs on a real phone — exposes every constant in `config.ts` **live**. The config objects are mutable and every system reads through those references, so a drag lands on the very next throw with no reload. The readout at the top is the point: it reports the angular slack a thumb actually has (🔴 / 🟠 / 🟢), turning "feels hard" into degrees as you move the slider. `COPY CONFIG` emits a paste-ready diff, so a session in the hand becomes a commit.
+
+Gated to dev hosts only — localhost and LAN IPs (the first cut missed the phone-on-LAN case, since the panel exists precisely for a device hitting `172.20.x.x`; fixed, with a test). Never shipped to players. `npm run solve` runs the same solver headless, so a later tuning tweak that broke the beatable-cap invariant would fail the suite, not the game.
+
+---
+
+## Session 4 — 16 July 2026 — Stage 2: Wind and speech
+
+**PR [#5](https://github.com/PlayableStories/ballot-bin-game/pull/5)**
+
+The stage the plan calls *"the one that decides if the game exists."* The wind stopped being a number a human dials and became something politics blows. Still grey-box — bunting is a line, leaflets are rectangles — because that is the whole point of the gate: if the wind reads from *shapes*, art is polish, and if it doesn't, art won't save it.
+
+**Built, all pure and all tested:**
+
+- **`systems/Wind.ts` — the wind as a state machine.** A speech sets a *target*; the wind eases toward it over 0.6s (never snaps — the room must be *seen* to change), and left alone it decays back toward calm (half-life 5.8s). The four effects, each clamped to the beatable cap: `PUSH` adds a signed magnitude, `AMPLIFY` ×1.6, `DAMPEN` ×0.45, `REVERSE` ×−0.85. **16 tests** — ramp, decay half-life, each effect, the cap, the gust.
+- **`systems/Speeches.ts` + `data/speeches.json` — ten statements as data**, five per archetype, all four effects, a `REVERSE` each, kept *outside the code* so a new election is a content swap. A pure scheduler: first line at 1s, 5–8s gaps, no line twice, no candidate three times running, and the subtle one — a bias *against* speeches that would pin the wind at the cap, so the room never saturates and sits there unreadable. **10 tests**, run across 40 seeded sessions.
+- **The room as the meter** (grey-box, through the renderer seam): bunting lean, drifting floor litter, slogan-words blown off the speaking podium, the swinging `PUBLIC OPINION` sign, and a podium that lights for whoever is talking. Every one is driven off the *same* number, `w = W / WIND.MAX`, so they can never disagree — one instrument seen five ways. **There is no numeric wind meter, and there never will be.**
+- **One telegraphed gust per session:** 0.8s of warning (the sign rattles, `⚠ GUST` pulses), then a raised-cosine ±3.0 that is deliberately *unbeatable* — the one moment a correct read cannot save you, signposted so heavily you watch it come and can do nothing. Rare enough to sting, not to embitter.
+
+Captions type on in the speaker's colour; the caption *is* the performance — no voice acting in the prototype.
+
+**Verified** the Stage 1 way, because a green suite is not a running game:
+
+- 121 unit tests green, typecheck and production build clean;
+- then driven headless in a real browser — the scene renders, a ballot scored, zero runtime errors, and the shot below catches the room mid-speech: the Strong Leader talking, the sign swung and the bunting leaning under the rightward wind his words just raised.
+
+![Stage 2 — a speech leans the room](docs/progress/stage-2-wind-and-speech.png)
+
+**Not done, and not mine to finish:** the ⛔ go/no-go is the playtest — five people who are not us, reading the wind from the room alone, beating it with no meter. Until that runs, Stage 2 is *code-complete, not signed off.*
+
 ---
 
 ## Next
 
-**Stage 2 — wind and speech.** The stage that decides whether the game exists.
+**Stage 4 — real rendering.** Grey boxes out, flat-shaded polygons in, still zero image files: the room, podiums, bin, hand and ballot as polygon data, real typography, the count screen and the camera pull-back over the scattered ballots. The art-path decision — code-drawn, hybrid, or production art — lands *here*, not before.
 
-- wind scalar: decay, cap, the four speech effects (PUSH / AMPLIFY / DAMPEN / REVERSE)
-- the speech scheduler, captions, ten statements, two archetypes
-- one telegraphed gust per session
-- environmental wind indicators — bunting, leaflets, slogan-words, the hanging sign
-- **no wind meter, ever**
+Two threads carried forward, both flagged above and both the human's to close:
 
-⛔ **Go/no-go:** can five people who are not us read the wind from the room alone, and beat it?
+- **The Stage 2 go/no-go playtest** — five strangers, no meter. Not yet run.
+- **The ±3.2° difficulty rescale** — parked by decision, with the tools in place to do it live.

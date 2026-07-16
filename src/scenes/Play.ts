@@ -1,7 +1,17 @@
 import Phaser from 'phaser';
-import { SCREEN, SESSION, PALETTE, WORLD, DEBUG } from '../config';
+import { SCREEN, SESSION, WIND, PALETTE, WORLD, DEBUG } from '../config';
 import { readSwipe, addNoise, type Sample } from '../systems/Gesture';
 import { launch, step, resolve, type Ballot } from '../systems/Ballistics';
+import {
+  initWind,
+  stepWind,
+  windValue,
+  applyEffect,
+  triggerGust,
+  gustPhase,
+  type WindState,
+} from '../systems/Wind';
+import { initSchedule, nextSpeech, type Schedule, type Speech } from '../systems/Speeches';
 import { GreyboxRenderer } from '../render/GreyboxRenderer';
 import type { Renderer } from '../render/Renderer';
 import { panel } from '../debug/TuningPanel';
@@ -18,9 +28,16 @@ export class PlayScene extends Phaser.Scene {
   private accumulator = 0;
 
   private timeLeft: number = SESSION.DURATION_S;
+  private elapsed = 0;
   private inBin = 0;
   private onFloor = 0;
   private over = false;
+
+  // Stage 2 — the wind is now political.
+  private wind: WindState = initWind();
+  private schedule: Schedule = initSchedule();
+  private gustAt = Infinity;
+  private gustArmed = false;
 
   private samples: Sample[] = [];
 
@@ -29,6 +46,8 @@ export class PlayScene extends Phaser.Scene {
   private hudFloor!: Phaser.GameObjects.Text;
   private hint!: Phaser.GameObjects.Text;
   private hand!: Phaser.GameObjects.Ellipse;
+  private caption!: Phaser.GameObjects.Text;
+  private captionEvent?: Phaser.Time.TimerEvent;
 
   constructor() {
     super('Play');
@@ -52,6 +71,20 @@ export class PlayScene extends Phaser.Scene {
     this.hudFloor = this.add.text(SCREEN.W - 24, 40, '', { ...mono, color: '#d98b2b' })
       .setOrigin(1, 0)
       .setDepth(100);
+
+    // The speech caption. Types on when a candidate speaks; the caption IS the
+    // performance — there is no voice acting in the prototype.
+    this.caption = this.add
+      .text(SCREEN.W / 2, SCREEN.H * 0.6, '', {
+        fontFamily: 'monospace',
+        fontSize: '30px',
+        color: '#f2efe6',
+        align: 'center',
+        wordWrap: { width: SCREEN.W - 100 },
+      })
+      .setOrigin(0.5)
+      .setDepth(95)
+      .setAlpha(0);
 
     // The ballot resting in the hand, before the throw.
     this.hand = this.add
@@ -105,7 +138,9 @@ export class PlayScene extends Phaser.Scene {
     const dt = Math.min(deltaMs / 1000, MAX_FRAME);
 
     if (!this.over) {
+      this.elapsed += dt;
       this.timeLeft = Math.max(0, this.timeLeft - dt);
+      this.runPolitics(dt);
       // The timer expiring does not snatch a ballot out of the air. Anything
       // already in flight is allowed to land, and to count.
       if (this.timeLeft === 0 && !this.ballot) this.endSession();
@@ -115,18 +150,72 @@ export class PlayScene extends Phaser.Scene {
     while (this.accumulator >= FIXED_DT) {
       this.accumulator -= FIXED_DT;
       this.stepPhysics(FIXED_DT);
+      this.wind = stepWind(this.wind, FIXED_DT);
     }
+
+    // The room reacts to the wind every frame, so it swings smoothly regardless
+    // of the fixed physics step. `windNorm` in [-1, 1] IS the meter.
+    const norm = Math.max(-1, Math.min(1, windValue(this.wind) / WIND.MAX));
+    this.view.updateRoom(dt, norm, gustPhase(this.wind));
 
     this.view.drawBallot(this.ballot);
     this.drawHud();
   }
 
+  /** Speeches blow the wind; the one gust arrives at its appointed second. */
+  private runPolitics(_dt: number): void {
+    const { speech, schedule } = nextSpeech(
+      this.schedule,
+      this.elapsed,
+      windValue(this.wind),
+      Math.random,
+    );
+    this.schedule = schedule;
+    if (speech) this.onSpeech(speech);
+
+    if (!this.gustArmed && this.elapsed >= this.gustAt) {
+      const dir = Math.random() < 0.5 ? -1 : 1;
+      this.wind = triggerGust(this.wind, this.elapsed, dir * WIND.GUST.STRENGTH);
+      this.gustArmed = true;
+    }
+  }
+
+  private onSpeech(s: Speech): void {
+    this.wind = applyEffect(this.wind, s.effect, s.dir ?? 0, s.mag ?? 0);
+    this.view.speak(s.candidate, s.words);
+    this.showCaption(s);
+  }
+
+  /** Type the line on over ~0.5s, hold, then fade. */
+  private showCaption(s: Speech): void {
+    this.captionEvent?.remove();
+
+    const full = s.text;
+    const colour = s.candidate === 'STRONG_LEADER' ? '#d98b2b' : '#2b8f8f';
+    this.caption.setColor(colour).setAlpha(1).setText('');
+
+    let i = 0;
+    this.captionEvent = this.time.addEvent({
+      delay: 26,
+      repeat: full.length - 1,
+      callback: () => {
+        i++;
+        this.caption.setText(full.slice(0, i));
+      },
+    });
+
+    this.time.delayedCall(26 * full.length + 2500, () => {
+      if (this.over) return;
+      this.tweens.add({ targets: this.caption, alpha: 0, duration: 400 });
+    });
+  }
+
   private stepPhysics(dt: number): void {
     if (!this.ballot) return;
 
-    // Stage 2 is where politics blows this. Until then it is a hand-dialled
-    // constant from the tuning panel, so the wind can be FELT before it can speak.
-    const wind = DEBUG.wind;
+    // The wind is now blown by politics. DEBUG.wind stays as a manual additive
+    // override for the tuning panel — zero in normal play.
+    const wind = windValue(this.wind) + DEBUG.wind;
 
     const next = step(this.ballot, wind, dt);
     const landing = resolve(this.ballot, next);
@@ -187,6 +276,8 @@ export class PlayScene extends Phaser.Scene {
     if (this.over) return;
     this.over = true;
     this.hand.setVisible(false);
+    this.caption.setAlpha(0);
+    this.captionEvent?.remove();
 
     const thrown = this.inBin + this.onFloor;
 
@@ -226,11 +317,22 @@ export class PlayScene extends Phaser.Scene {
   private resetSession(): void {
     this.view.reset();
     this.timeLeft = SESSION.DURATION_S;
+    this.elapsed = 0;
     this.inBin = 0;
     this.onFloor = 0;
     this.over = false;
     this.ballot = null;
     this.held = true;
     this.samples = [];
+
+    this.wind = initWind();
+    this.schedule = initSchedule();
+    // One gust, some time after the opening, comfortably before the end.
+    this.gustAt =
+      WIND.GUST.EARLIEST_S + Math.random() * (SESSION.DURATION_S - 5 - WIND.GUST.EARLIEST_S);
+    this.gustArmed = false;
+
+    this.caption.setAlpha(0).setText('');
+    this.captionEvent?.remove();
   }
 }

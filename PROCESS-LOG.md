@@ -198,6 +198,38 @@ The AI's automated playtest never saw this, because a Playwright mouse gesture t
 
 ---
 
+# Session 3 — the wind learns to speak
+
+Stages 3 and 2, in that order — which is itself the first lesson.
+
+## Building the instrument before the stage that needs it
+
+The plan lists Stage 2 (wind and speech) before Stage 3 (tuning). We built them backwards on purpose. Stage 1 had just proved that this game's failures are *felt*, not seen — invisible to a test suite, visible only in a hand — and Stage 2 is the stage most likely to produce one. So the tuning panel, which turns a bad feel into a number you can drag, was built *first*, so it would exist the moment Stage 2 needed it.
+
+**Lesson 13 — sequence the tools ahead of the stage that will need them.** The plan's order is a default, not a law. When you know a stage is going to generate "this feels wrong," build the instrument that measures "wrong" before you build the stage. The model is happy to follow the plan off a cliff; deciding to reorder it was a human call, and the right one.
+
+## The deferral, and what honesty looked like
+
+Then the designer overruled the plan a second time. The DEVLOG said, in bold, *fix the ±3.2° difficulty before Stage 2 or the go/no-go returns a false negative.* The designer's call: *"the difficulty is so far alright — I'll review it later,"* and build Stage 2 now.
+
+There were three things the model could have done: silently comply, relitigate the argument it had already made, or comply **and keep the risk visible**. The third is the only right one. Stage 2 got built on the untuned baseline — and the warning the docs already contained was not deleted to match the decision; it was updated to say *held, not resolved*, and pinned next to the new work with the exact reading to apply if the playtest goes badly.
+
+**Lesson 14 — a deferred risk must stay a live entry, not become a silent one.** When the designer overrules the plan, the plan yields — but the model's job is to preserve the plan's *warning* as a flag, not to erase it so the record looks tidy. A parked risk that isn't written down is just a bug with a good mood. The failing humane test stays red on purpose for exactly this reason: a debt you can see.
+
+## The invariant that lives in the scheduler, not the physics
+
+The wind's whole claim is that it is *readable*. A wind pinned at its cap, speech after speech, is not readable — it is a wall, and a wall says "voting is futile," which is a lazier point than the one the game makes. The physics can't prevent this; the *scheduler* has to. So it carries a bias against speeches that would keep the wind saturated — a design invariant enforced in the content layer, not the force layer.
+
+**Lesson 15 — a mechanic can be working and still be killing the thesis.** Every effect applied correctly, every test green, and the game could still quietly collapse into "the wind is always maxed, throw and hope." The thing that keeps a system *meaning* what you intended is often an invariant one layer up from where the system runs. Ask not just "does it work?" but "can it reach a state where it stops making my point?" — and put the guard there.
+
+## The quiet session is the earlier sessions paying out
+
+This one had no dramatic broken-game screenshot. Stage 2 went from spec to 121 green tests and a clean running build without a nasty browser surprise — not because it was simpler, but because the scaffolding the painful sessions bought (pure testable systems, the renderer seam, seam tests, and the reflex to *drive the real thing and look at the shot*) was already in place and caught problems before they compounded. The absence of a disaster is not luck; it is the earlier disasters, refunded.
+
+**But the gate is still shut.** The model built the room that is supposed to be readable. Whether it *is* readable — five strangers, no meter — is the one question this whole stage exists to answer, and it is not a question the model can answer for itself. Code-complete is not signed off, and saying otherwise would be the exact over-confidence Lessons 8–11 are about.
+
+---
+
 ## The method, if you want to steal it
 
 1. **Bring a thesis.** The model supplies competence, not intent.
@@ -210,13 +242,15 @@ The AI's automated playtest never saw this, because a Playwright mouse gesture t
 8. **Never trust a green suite.** Make it run the game, drive the game, and look at the screenshot.
 9. **Play it yourself, on the real device.** The model's playtest is a machine playing a machine — perfect, tremorless, and testing a player who does not exist.
 10. **Gate each stage, and let the gate be allowed to fail.** Cheap and ugly and early is how you find out you are wrong while it is still cheap to be wrong.
+11. **Build the instrument before the stage that needs it.** The plan's order is a default. Measure "wrong" before you build the thing that will feel wrong.
+12. **A deferred risk stays a live entry.** When a call overrules the plan, keep the plan's warning visible — a parked risk that isn't written down is a bug with a good mood.
 
 ---
 
-## Open, going into session 3
+## Open, going into session 4
 
-* 🔴 **The ±3.2° angle window** — the fix is a rescale of the input mapping (`LATERAL_GAIN` halved, `WIND.MAX` dropped to match), which doubles the tolerance while preserving every design ratio. **It should land before Stage 2**, because a baseline that fights the thumb would turn Stage 2's playtest into a false negative — the same trap as before, one stage later and more expensive.
-* **The art path** — code-drawn, hybrid, or production art. Deferred to Stage 4. Recommended: hybrid.
-* **Stage 2 go/no-go**: can five strangers read the wind from the room, with no meter?
+* ⛔ **The Stage 2 go/no-go** — can five strangers read the wind from the room, with no meter, and beat it? **Built, not answered.** The model made the room readable; whether it *is* readable is the human's to find out, and it is the whole game.
+* 🔴 **The ±3.2° angle window** — parked by the designer's call, not fixed. The rescale (`LATERAL_GAIN` halved, `WIND.MAX` dropped to match) is a live entry, with tools in place to do it in the hand. If the go/no-go goes badly, rule this out *first*.
+* **The art path** — code-drawn, hybrid, or production art. Decided at Stage 4. Recommended: hybrid.
 
-The last one is the whole game. Everything before it is scaffolding, and everything after it is decoration.
+The first one is the whole game. Everything before it is scaffolding, and everything after it is decoration.
