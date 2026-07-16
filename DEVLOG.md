@@ -172,6 +172,10 @@ Rebuilt the beat as two:
 
 *The bubble is the rhetoric; the plate below is the consequence. Two voices, which is what the beat always needed.*
 
+### Third note — pacing
+
+Two pure-config tweaks from playing it: the session is now **60s** (down from 75), and the gap between speeches widened to **7–10s** (from 5–8) so each side takes a little longer to answer the other. The slower cadence sits well with the ~5.8s wind half-life — the room now has time to drift back toward calm between beats, so a single speech's effect is easier to read in isolation. The residual-wind tail is kept (speeches stop at 53s). No mechanics changed; the design invariants and scheduler tests carry over untouched.
+
 ---
 
 ## Next

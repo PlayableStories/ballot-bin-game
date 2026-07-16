@@ -157,11 +157,17 @@ export const WIND = {
 };
 
 export const SESSION = {
-  DURATION_S: 75,
-  /** Residual decaying wind plays out the last stretch alone. */
-  SPEECHES_STOP_S: 68,
+  DURATION_S: 60,
+  /** Residual decaying wind plays out the last stretch alone. ~7s tail, as at 75s. */
+  SPEECHES_STOP_S: 53,
   FIRST_SPEECH_S: 1.0,
-  SPEECH_GAP_S: { min: 5, max: 8 },
+  /**
+   * Gap between speeches — how long one side takes to answer the other.
+   * Widened from 5–8s so the back-and-forth is slower and each speech's effect
+   * has room to be read before the next one lands (the wind half-life is ~5.8s,
+   * so a longer gap also lets the room drift back toward calm between beats).
+   */
+  SPEECH_GAP_S: { min: 7, max: 10 },
   RESPAWN_S: 0.35,
 };
 
