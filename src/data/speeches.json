@@ -6,14 +6,14 @@
     "effect": "PUSH",
     "dir": 1,
     "mag": 3.0,
-    "words": ["STRONG", "STEADY", "COURSE"]
+    "words": ["STRONG", "STEADY", "COURSE", "ORDER"]
   },
   {
     "id": "sl_02",
     "candidate": "STRONG_LEADER",
     "text": "I will not be blown off course.",
     "effect": "AMPLIFY",
-    "words": ["RESOLVE", "COURSE", "HOLD"]
+    "words": ["RESOLVE", "COURSE", "HOLD", "FIRM"]
   },
   {
     "id": "sl_03",
@@ -22,51 +22,138 @@
     "effect": "PUSH",
     "dir": 1,
     "mag": 4.5,
-    "words": ["SWEPT", "ASIDE", "ORDER"]
+    "words": ["SWEPT", "ASIDE", "NOW", "ORDER"]
   },
   {
     "id": "sl_04",
     "candidate": "STRONG_LEADER",
     "text": "Order restored. The noise will settle.",
     "effect": "DAMPEN",
-    "words": ["ORDER", "SETTLE", "CALM"]
+    "words": ["ORDER", "SETTLE", "CALM", "QUIET"]
   },
   {
     "id": "sl_05",
     "candidate": "STRONG_LEADER",
     "text": "Everything they promised you has turned.",
     "effect": "REVERSE",
-    "words": ["TURNED", "EVERYTHING", "AGAIN"]
+    "words": ["TURNED", "PROMISED", "EVERYTHING", "AGAIN"]
+  },
+  {
+    "id": "sl_06",
+    "candidate": "STRONG_LEADER",
+    "text": "We hold the line, whatever the cost.",
+    "effect": "PUSH",
+    "dir": -1,
+    "mag": 3.0,
+    "words": ["HOLD", "LINE", "COST", "DUTY"]
+  },
+  {
+    "id": "sl_07",
+    "candidate": "STRONG_LEADER",
+    "text": "Strength answers strength. Louder.",
+    "effect": "AMPLIFY",
+    "words": ["STRENGTH", "LOUDER", "MORE", "AGAIN"]
+  },
+  {
+    "id": "sl_08",
+    "candidate": "STRONG_LEADER",
+    "text": "One nation. One direction. One hand on the wheel.",
+    "effect": "PUSH",
+    "dir": 1,
+    "mag": 3.0,
+    "words": ["ONE", "NATION", "WHEEL", "HAND"]
+  },
+  {
+    "id": "sl_09",
+    "candidate": "STRONG_LEADER",
+    "text": "Enough drama. Steady as she goes.",
+    "effect": "DAMPEN",
+    "words": ["STEADY", "ENOUGH", "CALM", "GOES"]
+  },
+  {
+    "id": "sl_10",
+    "candidate": "STRONG_LEADER",
+    "text": "The tide you were promised has gone out.",
+    "effect": "REVERSE",
+    "words": ["TIDE", "GONE", "OUT", "PROMISED"]
+  },
+  {
+    "id": "sl_11",
+    "candidate": "STRONG_LEADER",
+    "text": "Push through. No retreat, no apology.",
+    "effect": "PUSH",
+    "dir": -1,
+    "mag": 4.5,
+    "words": ["PUSH", "THROUGH", "NO", "RETREAT"]
+  },
+  {
+    "id": "sl_12",
+    "candidate": "STRONG_LEADER",
+    "text": "Discipline. Order. Results.",
+    "effect": "PUSH",
+    "dir": 1,
+    "mag": 1.5,
+    "words": ["DISCIPLINE", "ORDER", "RESULTS", "NOW"]
+  },
+  {
+    "id": "sl_13",
+    "candidate": "STRONG_LEADER",
+    "text": "Say it again, until it is beyond doubt.",
+    "effect": "AMPLIFY",
+    "words": ["AGAIN", "DOUBT", "CERTAIN", "SAY"]
+  },
+  {
+    "id": "sl_14",
+    "candidate": "STRONG_LEADER",
+    "text": "Let the shouting die down and look at the record.",
+    "effect": "DAMPEN",
+    "words": ["RECORD", "QUIET", "LOOK", "DOWN"]
+  },
+  {
+    "id": "sl_15",
+    "candidate": "STRONG_LEADER",
+    "text": "The wind is at our backs. Keep marching.",
+    "effect": "PUSH",
+    "dir": 1,
+    "mag": 3.0,
+    "words": ["WIND", "MARCH", "KEEP", "BACKS"]
+  },
+  {
+    "id": "sl_16",
+    "candidate": "STRONG_LEADER",
+    "text": "What they built is coming apart.",
+    "effect": "REVERSE",
+    "words": ["BUILT", "APART", "DONE", "THEIRS"]
   },
   {
     "id": "os_01",
     "candidate": "OUTSIDER",
-    "text": "They've had their turn. Now cut the rope.",
+    "text": "They have had their turn. Now cut the rope.",
     "effect": "PUSH",
     "dir": -1,
     "mag": 3.0,
-    "words": ["THEM", "CUT", "ROPE"]
+    "words": ["THEM", "CUT", "ROPE", "TURN"]
   },
   {
     "id": "os_02",
     "candidate": "OUTSIDER",
-    "text": "Louder. Say it louder. They can't ignore us.",
+    "text": "Louder. Say it louder. They cannot ignore us.",
     "effect": "AMPLIFY",
-    "words": ["LOUDER", "US", "NOW"]
+    "words": ["LOUDER", "US", "NOW", "IGNORE"]
   },
   {
     "id": "os_03",
     "candidate": "OUTSIDER",
     "text": "Every promise they made, gone the other way.",
     "effect": "REVERSE",
-    "words": ["PROMISE", "GONE", "OTHER"]
+    "words": ["PROMISE", "GONE", "OTHER", "EVERY"]
   },
   {
     "id": "os_04",
     "candidate": "OUTSIDER",
     "text": "Enough shouting. Just look at the receipts.",
     "effect": "DAMPEN",
-    "words": ["ENOUGH", "RECEIPTS", "LOOK"]
+    "words": ["ENOUGH", "RECEIPTS", "LOOK", "STOP"]
   },
   {
     "id": "os_05",
@@ -75,6 +162,93 @@
     "effect": "PUSH",
     "dir": -1,
     "mag": 4.5,
-    "words": ["PUSH", "BACK", "HARDER"]
+    "words": ["PUSH", "BACK", "HARDER", "DOWN"]
+  },
+  {
+    "id": "os_06",
+    "candidate": "OUTSIDER",
+    "text": "Turn it around. Their way is finished.",
+    "effect": "PUSH",
+    "dir": 1,
+    "mag": 3.0,
+    "words": ["TURN", "FINISHED", "THEIR", "AROUND"]
+  },
+  {
+    "id": "os_07",
+    "candidate": "OUTSIDER",
+    "text": "You are angry? Good. Get angrier.",
+    "effect": "AMPLIFY",
+    "words": ["ANGRY", "MORE", "GOOD", "ANGRIER"]
+  },
+  {
+    "id": "os_08",
+    "candidate": "OUTSIDER",
+    "text": "Clear them out. Every last one.",
+    "effect": "PUSH",
+    "dir": -1,
+    "mag": 3.0,
+    "words": ["CLEAR", "EVERY", "THEM", "OUT"]
+  },
+  {
+    "id": "os_09",
+    "candidate": "OUTSIDER",
+    "text": "Calm down and count who is really paying.",
+    "effect": "DAMPEN",
+    "words": ["COUNT", "CALM", "PAYING", "WHO"]
+  },
+  {
+    "id": "os_10",
+    "candidate": "OUTSIDER",
+    "text": "Everything they took is coming back.",
+    "effect": "REVERSE",
+    "words": ["TOOK", "BACK", "COMING", "OURS"]
+  },
+  {
+    "id": "os_11",
+    "candidate": "OUTSIDER",
+    "text": "Flip the table. All of it.",
+    "effect": "PUSH",
+    "dir": 1,
+    "mag": 4.5,
+    "words": ["FLIP", "TABLE", "ALL", "OVER"]
+  },
+  {
+    "id": "os_12",
+    "candidate": "OUTSIDER",
+    "text": "Us. Not them. Us.",
+    "effect": "PUSH",
+    "dir": -1,
+    "mag": 1.5,
+    "words": ["US", "NOT", "THEM", "OURS"]
+  },
+  {
+    "id": "os_13",
+    "candidate": "OUTSIDER",
+    "text": "They hate that you noticed. Notice louder.",
+    "effect": "AMPLIFY",
+    "words": ["NOTICE", "LOUDER", "HATE", "SEEN"]
+  },
+  {
+    "id": "os_14",
+    "candidate": "OUTSIDER",
+    "text": "Stop shouting a second and read the small print.",
+    "effect": "DAMPEN",
+    "words": ["READ", "PRINT", "STOP", "SMALL"]
+  },
+  {
+    "id": "os_15",
+    "candidate": "OUTSIDER",
+    "text": "They built the wall. We have the rope.",
+    "effect": "PUSH",
+    "dir": -1,
+    "mag": 3.0,
+    "words": ["WALL", "ROPE", "WE", "BUILT"]
+  },
+  {
+    "id": "os_16",
+    "candidate": "OUTSIDER",
+    "text": "The whole thing is about to swing the other way.",
+    "effect": "REVERSE",
+    "words": ["SWING", "OTHER", "WHOLE", "WAY"]
   }
 ]

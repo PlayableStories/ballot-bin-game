@@ -61,12 +61,21 @@ export class GreyboxRenderer implements Renderer {
   private podiums!: Record<Candidate, { body: Phaser.GameObjects.Rectangle; glow: number }>;
   private windNorm = 0;
 
+  // The speech bubble — the sentence, delivered BY the politician.
+  private speech!: Phaser.GameObjects.Container;
+  private speechPlate!: Phaser.GameObjects.Rectangle;
+  private speechText!: Phaser.GameObjects.Text;
+  private speechTail!: Phaser.GameObjects.Graphics;
+  private speechType?: Phaser.Time.TimerEvent;
+  private speechFade?: Phaser.Tweens.Tween;
+
   create(scene: Phaser.Scene): void {
     this.scene = scene;
 
     this.drawRoom();
     this.buildPodiums();
     this.buildIndicators();
+    this.buildSpeechBubble();
 
     // Landed ballots sit above the floor but below the bin's front lip.
     this.landedLayer = scene.add.container(0, 0);
@@ -225,6 +234,32 @@ export class GreyboxRenderer implements Renderer {
   }
 
   /**
+   * The speech bubble — built once, hidden, reused. A stable dark plate (sized
+   * to the full sentence, so it does not resize while the text types on), the
+   * sentence itself, and a tail that points down at whichever podium is talking.
+   */
+  private buildSpeechBubble(): void {
+    const s = this.scene;
+    this.speechTail = s.add.graphics();
+    this.speechPlate = s.add.rectangle(0, 0, 10, 10, 0x14141a, 0.86).setOrigin(0.5);
+    this.speechText = s.add
+      .text(0, 0, '', {
+        fontFamily: 'monospace',
+        fontSize: '22px',
+        color: '#f2efe6',
+        align: 'center',
+        wordWrap: { width: 300 },
+      })
+      .setOrigin(0.5);
+    // Above the podiums, below the HUD. The tail sits behind the plate.
+    this.speech = s.add
+      .container(0, 0, [this.speechTail, this.speechPlate, this.speechText])
+      .setDepth(92)
+      .setVisible(false)
+      .setAlpha(0);
+  }
+
+  /**
    * The bin's front lip, drawn OVER the ball.
    *
    * Without this a ball landing in the bin just vanishes; with it, you watch it
@@ -361,7 +396,7 @@ export class GreyboxRenderer implements Renderer {
   private driveSlogans(dt: number, w: number): void {
     const survivors: Slogan[] = [];
     for (const s of this.slogans) {
-      s.vx += w * 260 * dt; // advected by the wind — this is a read too
+      s.vx += w * 320 * dt; // strongly advected — the wind carries the litter off
       s.life -= dt;
       if (s.life <= 0) {
         s.obj.destroy();
@@ -369,7 +404,8 @@ export class GreyboxRenderer implements Renderer {
       }
       s.obj.x += s.vx * dt;
       s.obj.y += s.vy * dt;
-      s.obj.setAlpha(Math.min(1, s.life / (s.maxLife * 0.6)));
+      // Capped low so a word can never outshout the speech bubble.
+      s.obj.setAlpha(Math.min(0.5, s.life / (s.maxLife * 0.6)));
       survivors.push(s);
     }
     this.slogans = survivors;
@@ -390,30 +426,92 @@ export class GreyboxRenderer implements Renderer {
     }
   }
 
-  speak(candidate: Candidate, words: string[]): void {
+  speak(candidate: Candidate, text: string, words: string[]): void {
     this.podiums[candidate].glow = 1;
+    this.showSpeech(candidate, text);
+    this.blowWords(candidate, words);
+  }
 
+  /** The politician delivers the sentence — a bubble above their podium, typing on. */
+  private showSpeech(candidate: Candidate, text: string): void {
+    this.speechType?.remove();
+    this.speechFade?.stop();
+
+    const colour = candidate === 'STRONG_LEADER' ? '#d98b2b' : '#2b8f8f';
+    const podTop = project({ x: PODIUM[candidate].x, y: PODIUM_H, z: PODIUM[candidate].z });
+
+    // Size the plate to the FULL sentence up front, so it never resizes mid-type.
+    this.speechText.setColor(colour).setText(text);
+    const w = this.speechText.width;
+    const h = this.speechText.height;
+    this.speechPlate.setSize(w + 28, h + 22);
+
+    // Bias toward the speaker's side, but keep the whole plate on-screen.
+    const cx = candidate === 'STRONG_LEADER' ? 235 : SCREEN.W - 235;
+    const cy = 420;
+    this.speech.setPosition(cx, cy).setVisible(true).setAlpha(1);
+
+    // Tail: from the plate's bottom edge down to the podium it belongs to.
+    const plateBottom = (h + 22) / 2;
+    this.speechTail.clear();
+    this.speechTail.fillStyle(0x14141a, 0.86);
+    this.speechTail.fillTriangle(
+      -14,
+      plateBottom - 2,
+      14,
+      plateBottom - 2,
+      podTop.x - cx,
+      podTop.y - 12 - cy,
+    );
+
+    // Type the sentence on.
+    this.speechText.setText('');
+    let i = 0;
+    this.speechType = this.scene.time.addEvent({
+      delay: 26,
+      repeat: text.length - 1,
+      callback: () => {
+        i++;
+        this.speechText.setText(text.slice(0, i));
+      },
+    });
+
+    // Hold past the type-on, then fade the whole bubble.
+    this.speechFade = this.scene.tweens.add({
+      targets: this.speech,
+      alpha: 0,
+      delay: 26 * text.length + 3500,
+      duration: 500,
+      onComplete: () => this.speech.setVisible(false),
+    });
+  }
+
+  /**
+   * The slogan words — now DELIBERATELY secondary. Small, faint, and quickly
+   * taken by the wind, so they read as blown texture, not as the speech. The
+   * speech is the bubble; these are litter with letters on.
+   */
+  private blowWords(candidate: Candidate, words: string[]): void {
     const foot = project({ x: PODIUM[candidate].x, y: PODIUM_H, z: PODIUM[candidate].z });
     const colour = candidate === 'STRONG_LEADER' ? '#d98b2b' : '#2b8f8f';
 
     words.forEach((word, i) => {
       const obj = this.scene.add
-        .text(foot.x + (i - 1) * 18, foot.y - i * 14, word, {
+        .text(foot.x + (i - 1.5) * 14, foot.y - i * 10, word, {
           fontFamily: 'monospace',
-          fontSize: '18px',
+          fontSize: '13px',
           color: colour,
-          fontStyle: 'bold',
         })
         .setOrigin(0.5)
-        .setDepth(85);
+        .setDepth(80)
+        .setAlpha(0.5);
 
-      // Fired upward and slightly toward the current wind, then the wind takes over.
       this.slogans.push({
         obj,
-        vx: this.windNorm * 40 + (i - 1) * 10,
-        vy: -70 - i * 12,
-        life: 2.4,
-        maxLife: 2.4,
+        vx: this.windNorm * 60 + (i - 1.5) * 8,
+        vy: -46 - i * 7,
+        life: 2.0,
+        maxLife: 2.0,
       });
     });
   }
@@ -423,6 +521,9 @@ export class GreyboxRenderer implements Renderer {
     this.landed = [];
     for (const s of this.slogans) s.obj.destroy();
     this.slogans = [];
+    this.speechType?.remove();
+    this.speechFade?.stop();
+    this.speech.setVisible(false).setAlpha(0);
     this.signAng = 0;
     this.signVel = 0;
     this.sign.setRotation(0);

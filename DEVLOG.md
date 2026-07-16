@@ -147,6 +147,31 @@ Captions type on in the speaker's colour; the caption *is* the performance — n
 
 **Not done, and not mine to finish:** the ⛔ go/no-go is the playtest — five people who are not us, reading the wind from the room alone, beating it with no meter. Until that runs, Stage 2 is *code-complete, not signed off.*
 
+### First playtest — 16 July
+
+**PR [#6](https://github.com/PlayableStories/ballot-bin-game/pull/6)**
+
+William, on the live build (no local env): likes the real-time flow and the *speech → comment* loop — the two things the whole design bets on. Two changes came back:
+
+- **The comment was hard to read.** The caption sat up among the podiums and washed out against the room. Moved it **down near the thumb, onto a dark plate**, held it ~4s longer, tightened its width — so it stops overlapping the candidates and actually reads.
+- **The bank was too thin** — "three words jumping up is not enough of a speech." Deepened the content from **10 lines to 32** (16 per archetype), each word-flurry from 3 to 4. The scheduler already samples a fresh subset per session, so the bank got varied for free.
+
+One design line held on the way: *"different wings"* could have pulled the writing toward left-vs-right talking points, which the concept explicitly refuses (the wind is not an ideological seesaw). Checked, and the call was **keep it rhetoric-based** — voices defined by *how* they talk, and both archetypes push the wind *both* ways across the bank. A test now fails if a push direction ever becomes a function of which candidate is speaking.
+
+### Second note — "they are words, not speech at all"
+
+Next play, a sharper diagnosis: *"where is the speech bank? They are still words, not sentences."* The bank was there (32 full sentences) — but nothing on screen made the politician read as *saying* one. The sentence was a detached bottom subtitle; what flew off the podium were single words, and those looked like the output. The presentation, not the content, was the problem — and it had drifted from the original vision: *"politician say something and then a comment appear to explain what is happening."* That is **two** voices, and only one existed.
+
+Rebuilt the beat as two:
+
+- **The speech** — the full sentence now types on in a **bubble beside the speaking politician**, in their colour, with a tail pointing at their podium. It reads, unmistakably, as *them talking*. (Renderer owns it; `speak()` gained the sentence.)
+- **The comment** — a new `systems/Narration.ts` (pure, tested) turns each effect into plain language ("The room turns — the wind flips"), shown a beat later on the readable bottom plate, in neutral italic so it is clearly the *narrator's* voice, not the candidate's.
+- **The flying words** — kept, but demoted to faint, wind-blown litter, so they stop impersonating the speech.
+
+![Stage 2 — the politician speaks, then a comment explains](docs/progress/stage-2-speech-bubble.png)
+
+*The bubble is the rhetoric; the plate below is the consequence. Two voices, which is what the beat always needed.*
+
 ---
 
 ## Next
