@@ -176,6 +176,18 @@ Rebuilt the beat as two:
 
 Two pure-config tweaks from playing it: the session is now **60s** (down from 75), and the gap between speeches widened to **7–10s** (from 5–8) so each side takes a little longer to answer the other. The slower cadence sits well with the ~5.8s wind half-life — the room now has time to drift back toward calm between beats, so a single speech's effect is easier to read in isolation. The residual-wind tail is kept (speeches stop at 53s). No mechanics changed; the design invariants and scheduler tests carry over untouched.
 
+### Fourth note — the count screen gets the last word
+
+The end screen always closed with the same line, *"The wind continues."* It now reads the result and answers with one of five short lines — and the brief shifted on the designer's call: from wry-neutral to **critical, with a get-out-the-vote push**.
+
+- nothing cast → *"Nothing cast. Don't leave it to the wind."*
+- fewer than 10 votes → *"Low turnout feeds the wind. Cast more."*
+- more in the bin → *"More landed than blew away. Keep voting."*
+- more on the floor → *"The wind took most. Out-vote it."*
+- a tie → *"A draw. One more vote wins it."*
+
+A priority cascade — turnout is judged before the split, so a thin session gets the turnout line even if the bin happened to win; low participation is the point being made, not the ratio. It lives as a pure `closingLine()` in `systems/Narration.ts` (4 tests), so the copy and the branch logic are verified without a browser. Still not a grade — no win/lose, no stars; the sting is civic, carried through the same wind metaphor as everything else.
+
 ---
 
 ## Next

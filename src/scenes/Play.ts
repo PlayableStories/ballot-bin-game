@@ -12,7 +12,7 @@ import {
   type WindState,
 } from '../systems/Wind';
 import { initSchedule, nextSpeech, type Schedule, type Speech } from '../systems/Speeches';
-import { describeEffect } from '../systems/Narration';
+import { describeEffect, closingLine } from '../systems/Narration';
 import { GreyboxRenderer } from '../render/GreyboxRenderer';
 import type { Renderer } from '../render/Renderer';
 import { panel } from '../debug/TuningPanel';
@@ -298,7 +298,8 @@ export class PlayScene extends Phaser.Scene {
           `${this.inBin} reached the count.`,
           `${this.onFloor} were swept aside.`,
           '',
-          'The wind continues.',
+          // The last word reads the result and pushes turnout — see Narration.ts.
+          closingLine(this.inBin, this.onFloor),
           '',
           '',
           'TAP TO VOTE AGAIN',
