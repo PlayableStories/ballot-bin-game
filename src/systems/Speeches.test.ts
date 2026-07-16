@@ -36,16 +36,35 @@ function playSession(seed: number, wind = 0): { t: number; speech: Speech }[] {
 }
 
 describe('the speech data is well-formed', () => {
-  it('is ten lines, five per candidate', () => {
-    expect(SPEECHES).toHaveLength(10);
+  it('is a deep bank, evenly split between the two archetypes', () => {
+    // Deepened from the original 10 on the first playtest. The scheduler samples
+    // a fresh subset each session, so a bigger bank buys variety for free.
+    expect(SPEECHES.length).toBeGreaterThanOrEqual(24);
     const byCand = (c: Candidate) => SPEECHES.filter((s) => s.candidate === c);
-    expect(byCand('STRONG_LEADER')).toHaveLength(5);
-    expect(byCand('OUTSIDER')).toHaveLength(5);
+    const leader = byCand('STRONG_LEADER').length;
+    const outsider = byCand('OUTSIDER').length;
+    expect(leader).toBeGreaterThanOrEqual(12);
+    expect(outsider).toBeGreaterThanOrEqual(12);
+    // Balanced, so neither archetype dominates the session.
+    expect(Math.abs(leader - outsider)).toBeLessThanOrEqual(2);
   });
 
-  it('has unique ids and non-empty words', () => {
+  it('has unique ids and a full flurry of words per line', () => {
     expect(new Set(SPEECHES.map((s) => s.id)).size).toBe(SPEECHES.length);
-    for (const s of SPEECHES) expect(s.words.length).toBeGreaterThan(0);
+    for (const s of SPEECHES) expect(s.words.length).toBeGreaterThanOrEqual(3);
+  });
+
+  it('never maps a push direction to a candidate — the wind is not a left/right seesaw', () => {
+    // Both archetypes must push the wind BOTH ways across the bank, or the game
+    // collapses into "your side pushes one way, theirs the other" — the exact
+    // ideological seesaw the design refuses (CONCEPT.md §12).
+    for (const c of ['STRONG_LEADER', 'OUTSIDER'] as Candidate[]) {
+      const dirs = SPEECHES.filter((s) => s.candidate === c && s.effect === 'PUSH').map(
+        (s) => s.dir,
+      );
+      expect(dirs).toContain(1);
+      expect(dirs).toContain(-1);
+    }
   });
 
   it('covers all four effects, with a REVERSE in each candidate', () => {

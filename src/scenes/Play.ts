@@ -74,13 +74,19 @@ export class PlayScene extends Phaser.Scene {
 
     // The speech caption. Types on when a candidate speaks; the caption IS the
     // performance — there is no voice acting in the prototype.
+    //
+    // Sits LOW, near the player's thumb, on a dark plate — not up among the
+    // podiums where the first playtest found it overlapping the candidates and
+    // washing out against the room.
     this.caption = this.add
-      .text(SCREEN.W / 2, SCREEN.H * 0.6, '', {
+      .text(SCREEN.W / 2, SCREEN.H * 0.78, '', {
         fontFamily: 'monospace',
-        fontSize: '30px',
+        fontSize: '28px',
         color: '#f2efe6',
         align: 'center',
-        wordWrap: { width: SCREEN.W - 100 },
+        wordWrap: { width: SCREEN.W - 200 },
+        backgroundColor: 'rgba(20, 20, 24, 0.78)',
+        padding: { x: 16, y: 12 },
       })
       .setOrigin(0.5)
       .setDepth(95)
@@ -204,9 +210,10 @@ export class PlayScene extends Phaser.Scene {
       },
     });
 
-    this.time.delayedCall(26 * full.length + 2500, () => {
+    // Hold well past the type-on so the comment is actually readable, then fade.
+    this.time.delayedCall(26 * full.length + 4000, () => {
       if (this.over) return;
-      this.tweens.add({ targets: this.caption, alpha: 0, duration: 400 });
+      this.tweens.add({ targets: this.caption, alpha: 0, duration: 500 });
     });
   }
 

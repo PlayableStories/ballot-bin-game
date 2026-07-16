@@ -63,8 +63,10 @@ Still grey-box, now blown by politics. This is the stage the plan calls *"the on
 
 The Strong Leader is speaking (amber podium lit, caption in his colour, slogan words rising off the podium) — and the room has *leaned*: the `PUBLIC OPINION` sign has swung and the bunting tilts under the rightward wind his words just raised. **That lean is the entire wind meter. There is no numeric one, and there never will be.**
 
-![Stage 2 — the Outsider reverses the room](stage-2-outsider-reverse.png)
+### After the first playtest
 
-The Outsider, in teal, with a `REVERSE` line — *"Every promise they made, gone the other way."* The two campaigns are one colour each, never red-and-blue, because the wind is not a left–right seesaw; it is rhetoric accumulating.
+![Stage 2 — the readable caption and the deeper bank](stage-2-caption-and-bank.png)
 
-Whether a stranger can actually *read* that lean and beat it — with no meter — is the go/no-go playtest, and it is still ahead. Built is not signed off. Story in [`DEVLOG.md`](../../DEVLOG.md); what we learned in [`PROCESS-LOG.md`](../../PROCESS-LOG.md).
+The first play on the live build produced two notes, both fixed here. The **caption** — the comment that explains what the politician just did — used to sit up among the podiums and wash out against the room; it now sits **low, near the thumb, on a dark plate**, holds longer, and clears the candidates. And the **speech bank** grew from ten lines to thirty-two (sixteen per archetype), with a fuller word-flurry (`THEIRS · DONE · APART · BUILT`). Both archetypes push the wind *both* ways across the bank, on purpose — the two campaigns are one colour each, never red-and-blue, because the wind is not a left–right seesaw; it is rhetoric accumulating. (A test now enforces that.)
+
+Whether a stranger can actually *read* the lean and beat it — with no meter — is the go/no-go playtest, and it is still ahead. Built is not signed off. Story in [`DEVLOG.md`](../../DEVLOG.md); what we learned in [`PROCESS-LOG.md`](../../PROCESS-LOG.md).
