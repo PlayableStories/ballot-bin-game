@@ -12,6 +12,7 @@ import {
   type WindState,
 } from '../systems/Wind';
 import { initSchedule, nextSpeech, type Schedule, type Speech } from '../systems/Speeches';
+import { describeEffect } from '../systems/Narration';
 import { GreyboxRenderer } from '../render/GreyboxRenderer';
 import type { Renderer } from '../render/Renderer';
 import { panel } from '../debug/TuningPanel';
@@ -46,8 +47,8 @@ export class PlayScene extends Phaser.Scene {
   private hudFloor!: Phaser.GameObjects.Text;
   private hint!: Phaser.GameObjects.Text;
   private hand!: Phaser.GameObjects.Ellipse;
-  private caption!: Phaser.GameObjects.Text;
-  private captionEvent?: Phaser.Time.TimerEvent;
+  private comment!: Phaser.GameObjects.Text;
+  private commentTimer?: Phaser.Time.TimerEvent;
 
   constructor() {
     super('Play');
@@ -72,17 +73,17 @@ export class PlayScene extends Phaser.Scene {
       .setOrigin(1, 0)
       .setDepth(100);
 
-    // The speech caption. Types on when a candidate speaks; the caption IS the
-    // performance — there is no voice acting in the prototype.
-    //
-    // Sits LOW, near the player's thumb, on a dark plate — not up among the
-    // podiums where the first playtest found it overlapping the candidates and
-    // washing out against the room.
-    this.caption = this.add
+    // The COMMENT — the second half of the beat. The politician says their line
+    // (a bubble by their podium, drawn by the renderer); a moment later this
+    // explains what it just did to the wind. Styled plainly and italic, low on a
+    // dark plate near the thumb, so it never looks like the politician's words —
+    // it is the narrator's, not theirs.
+    this.comment = this.add
       .text(SCREEN.W / 2, SCREEN.H * 0.78, '', {
         fontFamily: 'monospace',
-        fontSize: '28px',
-        color: '#f2efe6',
+        fontSize: '24px',
+        color: '#cfcabd',
+        fontStyle: 'italic',
         align: 'center',
         wordWrap: { width: SCREEN.W - 200 },
         backgroundColor: 'rgba(20, 20, 24, 0.78)',
@@ -188,32 +189,27 @@ export class PlayScene extends Phaser.Scene {
 
   private onSpeech(s: Speech): void {
     this.wind = applyEffect(this.wind, s.effect, s.dir ?? 0, s.mag ?? 0);
-    this.view.speak(s.candidate, s.words);
-    this.showCaption(s);
+    this.view.speak(s.candidate, s.text, s.words);
+    this.showComment(s);
   }
 
-  /** Type the line on over ~0.5s, hold, then fade. */
-  private showCaption(s: Speech): void {
-    this.captionEvent?.remove();
+  /**
+   * Reveal the explanation AFTER the politician has finished saying their line —
+   * speech first, then the comment that explains it. The renderer types the
+   * sentence on at ~26ms/char, so we wait that long before the narrator speaks.
+   */
+  private showComment(s: Speech): void {
+    this.commentTimer?.remove();
+    this.comment.setAlpha(0).setText(describeEffect(s.effect, s.dir ?? 0));
 
-    const full = s.text;
-    const colour = s.candidate === 'STRONG_LEADER' ? '#d98b2b' : '#2b8f8f';
-    this.caption.setColor(colour).setAlpha(1).setText('');
-
-    let i = 0;
-    this.captionEvent = this.time.addEvent({
-      delay: 26,
-      repeat: full.length - 1,
-      callback: () => {
-        i++;
-        this.caption.setText(full.slice(0, i));
-      },
-    });
-
-    // Hold well past the type-on so the comment is actually readable, then fade.
-    this.time.delayedCall(26 * full.length + 4000, () => {
+    const revealAt = 26 * s.text.length + 300;
+    this.commentTimer = this.time.delayedCall(revealAt, () => {
       if (this.over) return;
-      this.tweens.add({ targets: this.caption, alpha: 0, duration: 500 });
+      this.tweens.add({ targets: this.comment, alpha: 1, duration: 250 });
+      this.time.delayedCall(3200, () => {
+        if (this.over) return;
+        this.tweens.add({ targets: this.comment, alpha: 0, duration: 500 });
+      });
     });
   }
 
@@ -283,8 +279,8 @@ export class PlayScene extends Phaser.Scene {
     if (this.over) return;
     this.over = true;
     this.hand.setVisible(false);
-    this.caption.setAlpha(0);
-    this.captionEvent?.remove();
+    this.comment.setAlpha(0);
+    this.commentTimer?.remove();
 
     const thrown = this.inBin + this.onFloor;
 
@@ -339,7 +335,7 @@ export class PlayScene extends Phaser.Scene {
       WIND.GUST.EARLIEST_S + Math.random() * (SESSION.DURATION_S - 5 - WIND.GUST.EARLIEST_S);
     this.gustArmed = false;
 
-    this.caption.setAlpha(0).setText('');
-    this.captionEvent?.remove();
+    this.comment.setAlpha(0).setText('');
+    this.commentTimer?.remove();
   }
 }

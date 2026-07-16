@@ -35,10 +35,13 @@ export interface Renderer {
   updateRoom(dt: number, windNorm: number, gust: GustPhase): void;
 
   /**
-   * Event: a candidate is speaking. Light their podium and blow their slogan
-   * words out into the room. The words come from the speech data, not an asset.
+   * Event: a candidate is speaking. The renderer owns the SPEECH itself — the
+   * full sentence, delivered as a bubble by that politician — plus their podium
+   * lighting up and the wind-blown slogan words. The explanatory comment (what
+   * the speech did to the wind) is Play's, not the renderer's. Text and words
+   * both come from the speech data, not an asset.
    */
-  speak(candidate: Candidate, words: string[]): void;
+  speak(candidate: Candidate, text: string, words: string[]): void;
 
   reset(): void;
 }

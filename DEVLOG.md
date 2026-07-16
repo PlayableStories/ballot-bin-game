@@ -158,7 +158,19 @@ William, on the live build (no local env): likes the real-time flow and the *spe
 
 One design line held on the way: *"different wings"* could have pulled the writing toward left-vs-right talking points, which the concept explicitly refuses (the wind is not an ideological seesaw). Checked, and the call was **keep it rhetoric-based** — voices defined by *how* they talk, and both archetypes push the wind *both* ways across the bank. A test now fails if a push direction ever becomes a function of which candidate is speaking.
 
-![Stage 2 — the readable caption and the deeper bank](docs/progress/stage-2-caption-and-bank.png)
+### Second note — "they are words, not speech at all"
+
+Next play, a sharper diagnosis: *"where is the speech bank? They are still words, not sentences."* The bank was there (32 full sentences) — but nothing on screen made the politician read as *saying* one. The sentence was a detached bottom subtitle; what flew off the podium were single words, and those looked like the output. The presentation, not the content, was the problem — and it had drifted from the original vision: *"politician say something and then a comment appear to explain what is happening."* That is **two** voices, and only one existed.
+
+Rebuilt the beat as two:
+
+- **The speech** — the full sentence now types on in a **bubble beside the speaking politician**, in their colour, with a tail pointing at their podium. It reads, unmistakably, as *them talking*. (Renderer owns it; `speak()` gained the sentence.)
+- **The comment** — a new `systems/Narration.ts` (pure, tested) turns each effect into plain language ("The room turns — the wind flips"), shown a beat later on the readable bottom plate, in neutral italic so it is clearly the *narrator's* voice, not the candidate's.
+- **The flying words** — kept, but demoted to faint, wind-blown litter, so they stop impersonating the speech.
+
+![Stage 2 — the politician speaks, then a comment explains](docs/progress/stage-2-speech-bubble.png)
+
+*The bubble is the rhetoric; the plate below is the consequence. Two voices, which is what the beat always needed.*
 
 ---
 
