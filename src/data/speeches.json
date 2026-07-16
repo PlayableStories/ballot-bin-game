@@ -1,0 +1,80 @@
+[
+  {
+    "id": "sl_01",
+    "candidate": "STRONG_LEADER",
+    "text": "Strong hands. Steady course. No excuses.",
+    "effect": "PUSH",
+    "dir": 1,
+    "mag": 3.0,
+    "words": ["STRONG", "STEADY", "COURSE"]
+  },
+  {
+    "id": "sl_02",
+    "candidate": "STRONG_LEADER",
+    "text": "I will not be blown off course.",
+    "effect": "AMPLIFY",
+    "words": ["RESOLVE", "COURSE", "HOLD"]
+  },
+  {
+    "id": "sl_03",
+    "candidate": "STRONG_LEADER",
+    "text": "The doubters will be swept aside.",
+    "effect": "PUSH",
+    "dir": 1,
+    "mag": 4.5,
+    "words": ["SWEPT", "ASIDE", "ORDER"]
+  },
+  {
+    "id": "sl_04",
+    "candidate": "STRONG_LEADER",
+    "text": "Order restored. The noise will settle.",
+    "effect": "DAMPEN",
+    "words": ["ORDER", "SETTLE", "CALM"]
+  },
+  {
+    "id": "sl_05",
+    "candidate": "STRONG_LEADER",
+    "text": "Everything they promised you has turned.",
+    "effect": "REVERSE",
+    "words": ["TURNED", "EVERYTHING", "AGAIN"]
+  },
+  {
+    "id": "os_01",
+    "candidate": "OUTSIDER",
+    "text": "They've had their turn. Now cut the rope.",
+    "effect": "PUSH",
+    "dir": -1,
+    "mag": 3.0,
+    "words": ["THEM", "CUT", "ROPE"]
+  },
+  {
+    "id": "os_02",
+    "candidate": "OUTSIDER",
+    "text": "Louder. Say it louder. They can't ignore us.",
+    "effect": "AMPLIFY",
+    "words": ["LOUDER", "US", "NOW"]
+  },
+  {
+    "id": "os_03",
+    "candidate": "OUTSIDER",
+    "text": "Every promise they made, gone the other way.",
+    "effect": "REVERSE",
+    "words": ["PROMISE", "GONE", "OTHER"]
+  },
+  {
+    "id": "os_04",
+    "candidate": "OUTSIDER",
+    "text": "Enough shouting. Just look at the receipts.",
+    "effect": "DAMPEN",
+    "words": ["ENOUGH", "RECEIPTS", "LOOK"]
+  },
+  {
+    "id": "os_05",
+    "candidate": "OUTSIDER",
+    "text": "They pushed you down. Push back harder.",
+    "effect": "PUSH",
+    "dir": -1,
+    "mag": 4.5,
+    "words": ["PUSH", "BACK", "HARDER"]
+  }
+]

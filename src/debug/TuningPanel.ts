@@ -165,7 +165,7 @@ export class TuningPanel {
       fmt: (v) => `${(v * DEG).toFixed(1)}°`,
     },
     {
-      label: '⟶ DEBUG WIND — hold a constant gale, until Stage 2 blows it',
+      label: '⟶ DEBUG WIND — a constant gale ADDED on top of the political wind',
       path: ['DEBUG', 'wind'],
       get: () => DEBUG.wind,
       set: (v) => (DEBUG.wind = v),

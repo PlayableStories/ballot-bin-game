@@ -44,3 +44,27 @@ The ball in flight, with its shadow tracking separately along the floor. **The s
 The left-hand image is why the grey-box stage exists. Two perfectly correct systems, wired together, made an unplayable game — and no unit test could see it.
 
 Full diagnosis in [`DEVLOG.md`](../../DEVLOG.md).
+
+---
+
+## Stage 3 — Tuning
+
+![Stage 3 tuning panel](stage-3-tuning-panel.png)
+
+Built before Stage 2, on purpose: the instrument that turns a bad feel into a number you can drag, in the hand that is complaining about it. Every constant in `config.ts` is live; the readout at the top reports the angular slack a thumb actually has (🔴 / 🟠 / 🟢), and `COPY CONFIG` turns a phone session into a commit. Dev hosts only — it never ships to players.
+
+---
+
+## Stage 2 — Wind and speech
+
+Still grey-box, now blown by politics. This is the stage the plan calls *"the one that decides if the game exists."*
+
+![Stage 2 — a speech leans the room](stage-2-wind-and-speech.png)
+
+The Strong Leader is speaking (amber podium lit, caption in his colour, slogan words rising off the podium) — and the room has *leaned*: the `PUBLIC OPINION` sign has swung and the bunting tilts under the rightward wind his words just raised. **That lean is the entire wind meter. There is no numeric one, and there never will be.**
+
+![Stage 2 — the Outsider reverses the room](stage-2-outsider-reverse.png)
+
+The Outsider, in teal, with a `REVERSE` line — *"Every promise they made, gone the other way."* The two campaigns are one colour each, never red-and-blue, because the wind is not a left–right seesaw; it is rhetoric accumulating.
+
+Whether a stranger can actually *read* that lean and beat it — with no meter — is the go/no-go playtest, and it is still ahead. Built is not signed off. Story in [`DEVLOG.md`](../../DEVLOG.md); what we learned in [`PROCESS-LOG.md`](../../PROCESS-LOG.md).
